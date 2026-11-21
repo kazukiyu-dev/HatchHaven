@@ -1,0 +1,23 @@
+{
+  "name": "hatchhaven",
+  "main": "src/worker.mjs",
+  "compatibility_date": "2026-02-10",
+  // Keep runtime settings added in the Cloudflare dashboard across Git deployments.
+  "keep_vars": true,
+  "workers_dev": true,
+  "observability": { "enabled": false },
+  "build": {
+    "command": "node scripts/build.mjs",
+    "watch_dir": ["scripts", "artwork", "public/data", "public/assets/components.mjs"]
+  },
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page",
+    "run_worker_first": ["/auth/*", "/api/*"]
+  },
+  "ratelimits": [{ "name": "AUTH_RATE", "namespace_id": "846172", "simple": { "limit": 20, "period": 60 } }],
+  "durable_objects": { "bindings": [{ "name": "AUTH_VAULT", "class_name": "AuthVault" }] },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["AuthVault"] }]
+}
